@@ -1,1 +1,2 @@
 Public Url to GitHub repository  [URL01]: https://github.com/xinhho/cdond-c3-projectstarter/tree/dev
+the public URL for your S3 Bucket (aka, My front-end) [URL02]: https://udapeople-8a8178b.s3.amazonaws.com/index.html#/employees
