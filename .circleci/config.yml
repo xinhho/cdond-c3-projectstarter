@@ -345,9 +345,9 @@ jobs:
         - image: amazon/aws-cli
       steps:
         - checkout
-        - run:
-            name: Get old stack workflow id
-            command: |
+        # - run:
+        #     name: Get old stack workflow id
+        #     command: |
               
         - run:
             name: Remove old stacks and files
