@@ -170,6 +170,7 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
+            - project/.circleci/OldWorkflowID.txt
       # Here's where you will add some code to rollback on failure      
 
   configure-infrastructure:
