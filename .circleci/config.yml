@@ -41,7 +41,7 @@ commands:
               #  Add revert code here. You can find this in the Getting Started section.
               npm run migration:revert
             fi
-              << parameters.when >>
+          when: << parameters.when >>
             
 jobs:
   build-frontend:
