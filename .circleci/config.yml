@@ -170,16 +170,16 @@ jobs:
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text >> inventory.txt
 
-            cd ..
-            export OldWorkflowID=$(aws cloudformation \
-                        list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
-                        --no-paginate --output text) > OldWorkflowID.txt
+            # cd ..
+            # export OldWorkflowID=$(aws cloudformation \
+            #             list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+            #             --no-paginate --output text) > OldWorkflowID.txt
             
       - persist_to_workspace:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-            - project/.circleci/OldWorkflowID.txt
+            # - project/.circleci/OldWorkflowID.txt
       # Here's where you will add some code to rollback on failure
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
@@ -364,11 +364,20 @@ jobs:
       - run:
           name: Update cloudfront distribution
           command: |
+            export OldWorkflowIDstack=$(aws cloudformation \
+              list-exports --query "Exports[?Name=='WorkflowID'].Value" \
+              --no-paginate --output text)
+            OldWorkflowID=${OldWorkflowIDstack:10:7}
+            echo ${OldWorkflowID} > oldId
             aws cloudformation deploy \
               --template-file .circleci/files/cloudfront.yml \
               --stack-name InitialStack \
               --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./oldId
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           when: on_fail
@@ -383,11 +392,15 @@ jobs:
         - checkout
         - run: yum install -y tar gzip
         - attach_workspace:
-            at: ~/
+            at: .
         - run:
             name: Remove old stacks and files
             command: |
-              export OldWorkflowID=$(cat ~/project/.circleci/OldWorkflowID.txt)
+              pwd
+              ls
+              cat ./oldId
+              OldWorkflowID=$(cat ./oldId)
+              # export OldWorkflowID=$(cat ~/project/.circleci/OldWorkflowID.txt)
               echo CIRCLE_WORKFLOW_ID: "${CIRCLE_WORKFLOW_ID:0:7}"
               echo OldWorkflowID: "${OldWorkflowID}"
 
