@@ -360,7 +360,9 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            # your code here
+            yum -y install tar gzip awscli curl npm nodejs
+      - attach_workspace:
+          at: .
       - run:
           name: Update cloudfront distribution
           command: |
@@ -375,7 +377,7 @@ jobs:
               --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople
       - persist_to_workspace:
-          root: .
+          root: ~/
           paths:
             - ./oldId
       - destroy-environment:
@@ -390,7 +392,7 @@ jobs:
         - image: amazon/aws-cli
       steps:
         - checkout
-        - run: yum install -y tar gzip
+        - run: yum install -y tar gzip unzip
         - attach_workspace:
             at: .
         - run:
