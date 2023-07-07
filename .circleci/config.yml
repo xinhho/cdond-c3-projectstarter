@@ -30,16 +30,11 @@ commands:
           name: Revert migrations
           command: |
             SUCCESS=$(curl --insecure https://kvdb.io/GjaC9nU9wy5YHGFsMYmuCs/migration_<< parameters.workflow_id >>)
-            echo SUCCESS: "${SUCCESS}"
-            echo $SUCCESS
-            pwd
             if (( $SUCCESS == 1 ));
             then
-              echo 'Reverting migrations'
               cd ~/project/backend
               npm install
               npm run migration:revert
-              echo 'Revert migrations done'
             fi
           when: << parameters.when >>
             
